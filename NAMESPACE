@@ -1,0 +1,2 @@
+export(scrypt_encode)
+export(scrypt_decode)
