@@ -10,4 +10,5 @@ Description:
 License: GPL-3 | file LICENSE
 Depends: R (>= 2.15.1) 
 URL: https://github.com/kippandrew/rscrypt
-SystemRequirements: GNU make
+Depends: Rcpp (>= 0.10.6)
+LinkingTo: Rcpp
