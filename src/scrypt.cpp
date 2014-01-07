@@ -1,10 +1,6 @@
 #include <Rcpp.h>
 #include <fcntl.h>
-
-//#include <unistd.h>
-//#include <stdio.h>
-//#include <stdint.h>
-//#include <unistd.h>
+#include "base64.hpp"
 
 extern "C" {
   #include "util/sysendian.h"
@@ -121,9 +117,8 @@ err0:
         return (4);
 }
 
-
 // [[Rcpp::export]]
-RawVector HashPassword(CharacterVector passwd, size_t maxmem, double maxmemfrac, double maxtime) {
+CharacterVector HashPassword(CharacterVector passwd, size_t maxmem, double maxmemfrac, double maxtime) {
   uint8_t outbuf[96];
   int logN=0;
   uint64_t N=0;
@@ -178,9 +173,8 @@ RawVector HashPassword(CharacterVector passwd, size_t maxmem, double maxmemfrac,
   HMAC_SHA256_Final(tmp, &hmac);
   memcpy(&outbuf[64], tmp, 32);
 
-  RawVector ret(96);
-  std::copy(outbuf, outbuf + 96, ret.begin());
-  return ret;
+  // return base64 encoded hash
+  return b64encode(outbuf, outbuf + 96);
 }
 
 // [[Rcpp::export]]

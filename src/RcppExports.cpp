@@ -6,7 +6,7 @@
 using namespace Rcpp;
 
 // HashPassword
-RawVector HashPassword(CharacterVector passwd, size_t maxmem, double maxmemfrac, double maxtime);
+CharacterVector HashPassword(CharacterVector passwd, size_t maxmem, double maxmemfrac, double maxtime);
 RcppExport SEXP scrypt_HashPassword(SEXP passwdSEXP, SEXP maxmemSEXP, SEXP maxmemfracSEXP, SEXP maxtimeSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
@@ -16,7 +16,7 @@ BEGIN_RCPP
         Rcpp::traits::input_parameter< size_t >::type maxmem(maxmemSEXP );
         Rcpp::traits::input_parameter< double >::type maxmemfrac(maxmemfracSEXP );
         Rcpp::traits::input_parameter< double >::type maxtime(maxtimeSEXP );
-        RawVector __result = HashPassword(passwd, maxmem, maxmemfrac, maxtime);
+        CharacterVector __result = HashPassword(passwd, maxmem, maxmemfrac, maxtime);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
     }
     UNPROTECT(1);
