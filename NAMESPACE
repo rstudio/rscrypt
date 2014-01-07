@@ -1,2 +1,2 @@
-useDynLib(rscrypt)
+useDynLib(scrypt)
 exportPattern("^[[:alpha:]]+")
