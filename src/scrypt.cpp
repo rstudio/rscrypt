@@ -180,6 +180,8 @@ CharacterVector HashPassword(CharacterVector passwd, size_t maxmem = 0, double m
     /* calculate N */
     N = (uint64_t) 1 << logN;
 
+    Rprintf("N=%d, r=%d, p=%d\n", logN, r, p);
+
     /* Generate the derived key */
     std::string data = as<std::string>(passwd);
     N = (uint64_t) 1 << logN;
@@ -266,4 +268,20 @@ bool VerifyPassword(CharacterVector hash, CharacterVector passwd) {
         return false;
 
     return true; // Success
+}
+
+// [[Rcpp::export]]
+RawVector Crypt(RawVector passwd, RawVector salt, uint32_t n, uint32_t r, uint32_t p, uint32_t length = 64) {
+    uint8_t outbuf[length];
+
+    const std::vector<uint8_t> passwdbuf = as<std::vector<uint8_t> >(passwd);
+    const std::vector<uint8_t> saltbuf = as<std::vector<uint8_t> >(salt);
+
+    if (crypto_scrypt(passwdbuf.data(), passwdbuf.size(), saltbuf.data(), saltbuf.size(), (uint64_t)n, r, p, outbuf, length)) {
+        stop("scrypt error");
+    }
+    
+    RawVector out(length);
+    std::copy(outbuf, outbuf + length, out.begin());
+    return out;
 }

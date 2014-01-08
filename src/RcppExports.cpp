@@ -74,3 +74,23 @@ BEGIN_RCPP
     return __sexp_result;
 END_RCPP
 }
+// Crypt
+RawVector Crypt(RawVector passwd, RawVector salt, uint32_t n, uint32_t r, uint32_t p, uint32_t length = 64);
+RcppExport SEXP scrypt_Crypt(SEXP passwdSEXP, SEXP saltSEXP, SEXP nSEXP, SEXP rSEXP, SEXP pSEXP, SEXP lengthSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< RawVector >::type passwd(passwdSEXP );
+        Rcpp::traits::input_parameter< RawVector >::type salt(saltSEXP );
+        Rcpp::traits::input_parameter< uint32_t >::type n(nSEXP );
+        Rcpp::traits::input_parameter< uint32_t >::type r(rSEXP );
+        Rcpp::traits::input_parameter< uint32_t >::type p(pSEXP );
+        Rcpp::traits::input_parameter< uint32_t >::type length(lengthSEXP );
+        RawVector __result = Crypt(passwd, salt, n, r, p, length);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}

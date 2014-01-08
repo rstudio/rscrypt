@@ -17,3 +17,7 @@ VerifyPassword <- function(hash, passwd) {
     .Call('scrypt_VerifyPassword', PACKAGE = 'scrypt', hash, passwd)
 }
 
+Crypt <- function(passwd, salt, n, r, p, length = 64L) {
+    .Call('scrypt_Crypt', PACKAGE = 'scrypt', passwd, salt, n, r, p, length)
+}
+
