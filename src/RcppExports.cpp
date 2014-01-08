@@ -5,8 +5,43 @@
 
 using namespace Rcpp;
 
+// Encrypt
+RawVector Encrypt(RawVector input, CharacterVector passwd, size_t maxmem = 0, double maxmemfrac = 0.1, double maxtime = 1.0);
+RcppExport SEXP scrypt_Encrypt(SEXP inputSEXP, SEXP passwdSEXP, SEXP maxmemSEXP, SEXP maxmemfracSEXP, SEXP maxtimeSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< RawVector >::type input(inputSEXP );
+        Rcpp::traits::input_parameter< CharacterVector >::type passwd(passwdSEXP );
+        Rcpp::traits::input_parameter< size_t >::type maxmem(maxmemSEXP );
+        Rcpp::traits::input_parameter< double >::type maxmemfrac(maxmemfracSEXP );
+        Rcpp::traits::input_parameter< double >::type maxtime(maxtimeSEXP );
+        RawVector __result = Encrypt(input, passwd, maxmem, maxmemfrac, maxtime);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
+// Decrypt
+RawVector Decrypt(RawVector input, CharacterVector passwd);
+RcppExport SEXP scrypt_Decrypt(SEXP inputSEXP, SEXP passwdSEXP) {
+BEGIN_RCPP
+    SEXP __sexp_result;
+    {
+        Rcpp::RNGScope __rngScope;
+        Rcpp::traits::input_parameter< RawVector >::type input(inputSEXP );
+        Rcpp::traits::input_parameter< CharacterVector >::type passwd(passwdSEXP );
+        RawVector __result = Decrypt(input, passwd);
+        PROTECT(__sexp_result = Rcpp::wrap(__result));
+    }
+    UNPROTECT(1);
+    return __sexp_result;
+END_RCPP
+}
 // HashPassword
-CharacterVector HashPassword(CharacterVector passwd, size_t maxmem, double maxmemfrac, double maxtime);
+CharacterVector HashPassword(CharacterVector passwd, size_t maxmem = 0, double maxmemfrac = 0.1, double maxtime = 1.0);
 RcppExport SEXP scrypt_HashPassword(SEXP passwdSEXP, SEXP maxmemSEXP, SEXP maxmemfracSEXP, SEXP maxtimeSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
@@ -24,13 +59,13 @@ BEGIN_RCPP
 END_RCPP
 }
 // VerifyPassword
-bool VerifyPassword(RawVector hash, CharacterVector passwd);
+bool VerifyPassword(CharacterVector hash, CharacterVector passwd);
 RcppExport SEXP scrypt_VerifyPassword(SEXP hashSEXP, SEXP passwdSEXP) {
 BEGIN_RCPP
     SEXP __sexp_result;
     {
         Rcpp::RNGScope __rngScope;
-        Rcpp::traits::input_parameter< RawVector >::type hash(hashSEXP );
+        Rcpp::traits::input_parameter< CharacterVector >::type hash(hashSEXP );
         Rcpp::traits::input_parameter< CharacterVector >::type passwd(passwdSEXP );
         bool __result = VerifyPassword(hash, passwd);
         PROTECT(__sexp_result = Rcpp::wrap(__result));
