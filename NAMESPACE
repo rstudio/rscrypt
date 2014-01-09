@@ -1,2 +1,2 @@
-export(HashPassword)
-export(VerifyPassword)
+useDynLib(scrypt)
+exportPattern("^[[:alpha:]]+")
