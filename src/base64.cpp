@@ -1,10 +1,9 @@
-#include <stdint.h>
-#include <string>
+#include <cstring>
 #include <vector>
 #include <iostream>
 #include <iomanip>
+//#include <stdint.h>
 
-#include <stdio.h>
 
 /*
  * Translation Table as described in RFC1113

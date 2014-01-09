@@ -2,6 +2,8 @@
 #include <fcntl.h>
 
 #ifdef __MINGW32__
+#undef Realloc
+#undef Free
 #include <windows.h>
 #endif
 
@@ -91,14 +93,17 @@ static int getsalt(uint8_t salt[32]) {
 
     HCRYPTPROV hCryptCtx;
 
-    if (CryptAcquireContext(&hCryptCtx, NULL, NULL, PROV_RSA_FULL, 0)) {
+    if (CryptAcquireContext(&hCryptCtx, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT | CRYPT_SILENT)) {
         if (!CryptGenRandom(hCryptCtx, buflen, buf))
             goto err;
         CryptReleaseContext(hCryptCtx, 0);
     } else {
         goto err;
     }
-
+    
+    /* Success! */
+    return (0);
+    
 #else
 
     int fd;
@@ -142,7 +147,7 @@ err:
 }
 
 // [[Rcpp::export]]
-RawVector Encrypt(RawVector input, CharacterVector passwd, size_t maxmem = 0, double maxmemfrac = 0.1, double maxtime = 1.0) {
+RawVector Encrypt(RawVector input, CharacterVector passwd, uint32_t maxmem = 0, double maxmemfrac = 0.1, double maxtime = 1.0) {
     RawVector out;
     return out;
 }
@@ -174,7 +179,7 @@ RawVector Decrypt(RawVector input, CharacterVector passwd) {
 //' @seealso \code{\link{VerifyPassword}}
 //' @export
 // [[Rcpp::export]]
-CharacterVector HashPassword(CharacterVector passwd, size_t maxmem = 0, double maxmemfrac = 0.1, double maxtime = 1.0) {
+CharacterVector HashPassword(CharacterVector passwd, uint32_t maxmem = 0, double maxmemfrac = 0.1, double maxtime = 1.0) {
 
     uint8_t outbuf[96];
     int logN=0;
@@ -190,25 +195,21 @@ CharacterVector HashPassword(CharacterVector passwd, size_t maxmem = 0, double m
     int rc;
 
     /* Calculate logN, r, p */
-    if ((rc = getparams(maxmem, maxmemfrac, maxtime, &logN, &r, &p) != 0))
-        return (rc);
+    if ((rc = getparams(maxmem, maxmemfrac, maxtime, &logN, &r, &p)) != 0)
+        stop("getparams error");
 
     /* Get Some Salt */
     if ((rc = getsalt(salt)) != 0)
-        return (rc); 
+        stop("getsalt error"); 
 
     /* calculate N */
     N = (uint64_t) 1 << logN;
 
-    Rprintf("N=%d, r=%d, p=%d\n", logN, r, p);
-
     /* Generate the derived key */
     std::string data = as<std::string>(passwd);
     N = (uint64_t) 1 << logN;
-    if (crypto_scrypt((const uint8_t*)data.c_str(), (size_t)data.length(), salt, 32, N, r, p, key, 64)) {
-        Rcerr << "Error hashing password: scrypt error." << std::endl;
-        return false;
-    }
+    if ((rc = crypto_scrypt((const uint8_t*)data.c_str(), (size_t)data.length(), salt, 32, N, r, p, key, 64)) != 0)
+        stop("crypto_scrypt error");
 
     /* Construct the hash */
     memcpy(outbuf, "scrypt", 6);

@@ -29,7 +29,10 @@
 #include "scrypt_platform.h"
 
 #include <sys/types.h>
+
+#ifndef __MINGW32__
 #include <sys/resource.h>
+#endif
 
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
@@ -141,6 +144,7 @@ memlimit_sysinfo(size_t * memlimit)
 static int
 memlimit_rlimit(size_t * memlimit)
 {
+#ifndef __MINGW32__
 	struct rlimit rl;
 	uint64_t memrlimit;
 
@@ -182,7 +186,9 @@ memlimit_rlimit(size_t * memlimit)
 	*memlimit = memrlimit;
 #endif
 
-	/* Success! */
+#endif
+
+    /* Success! */
 	return (0);
 }
 

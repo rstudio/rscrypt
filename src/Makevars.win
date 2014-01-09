@@ -1,3 +1,24 @@
 
 ## Use the R_HOME indirection to support installations of multiple R version
-PKG_LIBS = $(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e "Rcpp:::LdFlags()")
+PKG_LIBS = $(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e "Rcpp:::LdFlags()") ./libscrypt.a
+PKG_CXXFLAGS = $(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e "Rcpp:::CxxFlags()") -I./scrypt-1.1.6/ -I./scrypt-1.1.6/lib
+
+.PHONY: all clean
+
+all: $(SHLIB)
+
+$(SHLIB): libscrypt.a
+
+libscrypt.a:
+	#(cd scrypt-1.1.6 && ./configure)
+	(cd scrypt-1.1.6 && $(CC) -I. -I./lib/crypto/ -I./lib/util/ $(CFLAGS) $(CPICFLAGS) -o lib/crypto/sha256.o -c lib/crypto/sha256.c)
+	#(cd scrypt-1.1.6 && $(CC) -I. -I./lib/crypto/ -I./lib/util/ $(CFLAGS) $(CPICFLAGS) -o lib/crypto/crypto_aesctr.o -c lib/crypto/crypto_aesctr.c)
+	(cd scrypt-1.1.6 && $(CC) -I. -I./lib/crypto/ -I./lib/util/ $(CFLAGS) $(CPICFLAGS) -o lib/crypto/crypto_scrypt-ref.o -c lib/crypto/crypto_scrypt-ref.c)
+	(cd scrypt-1.1.6 && $(CC) -I. -I./lib/crypto/ -I./lib/util/ $(CFLAGS) $(CPICFLAGS) -o lib/util/memlimit.o -c lib/util/memlimit.c)
+	#(cd scrypt-1.1.6 && $(CC) -I. -I./lib/crypto/ -I./lib/util/ $(CFLAGS) $(CPICFLAGS) -o lib/scryptenc/scryptenc.o -c lib/scryptenc/scryptenc.c)
+	(cd scrypt-1.1.6 && $(CC) -I. -I./lib/crypto/ -I./lib/util/ $(CFLAGS) $(CPICFLAGS) -o lib/scryptenc/scryptenc_cpuperf.o -c lib/scryptenc/scryptenc_cpuperf.c)
+	#(cd scrypt-1.1.6 && $(AR) cq ../libscrypt.a lib/crypto/sha256.o lib/crypto/crypto_aesctr.o lib/crypto/crypto_scrypt-ref.o lib/util/memlimit.o lib/scryptenc/scryptenc.o lib/scryptenc/scryptenc_cpuperf.o)
+	(cd scrypt-1.1.6 && $(AR) cq ../libscrypt.a lib/crypto/sha256.o lib/crypto/crypto_scrypt-ref.o lib/util/memlimit.o lib/scryptenc/scryptenc_cpuperf.o)
+
+clean:
+	rm -f $(SHLIB) libscrypt.a
