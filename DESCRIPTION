@@ -1,14 +1,14 @@
 Package: scrypt
 Type: Package
-Title: scrypt cryptographic functions for R
+Title: scrypt key derivation function for R
 Version: 0.1.99
 Date: 2013-12-20
-Author: RStudio, Inc.
-Copyright: RStudio, Inc.; Colin Percival;
+Author: RStudio, Inc.; Colin Percival
+Copyright: RStudio, Inc.; Colin Percival
 Maintainer: Andy Kipp <andy@rstudio.com>
-Description: R functions for Colin Percival's Scrypt key derivation utility.
+Description: R functions for Colin Percival's Scrypt key derivation utility
 License: GPL-3 | file LICENSE
-Depends: R (>= 2.15.1)
+Depends:
+    Rcpp (>= 0.10.6)
 URL: https://github.com/kippandrew/rscrypt
-Depends: Rcpp (>= 0.10.6)
 LinkingTo: Rcpp

@@ -153,6 +153,26 @@ RawVector Decrypt(RawVector input, CharacterVector passwd) {
     return out;
 }
 
+//' Hash a password
+//'
+//' @param passwd password to hash
+//' @param maxmem max memory (default )
+//' @param maxmemfrac max memory percent (default 0.1)
+//' @param maxtime max cpu time (default 1.0)
+//' @return
+//' base64 encoded password hash
+//' @examples
+//' \dontrun{
+//'
+//' # Hash password using default parameters
+//' HashPassword('passw0rd')
+//'
+//' # Hash password with custom parameters
+//' HashPassword('passw0rd', 0, .25, 5.0)
+//'
+//' }
+//' @seealso \code{\link{VerifyPassword}}
+//' @export
 // [[Rcpp::export]]
 CharacterVector HashPassword(CharacterVector passwd, size_t maxmem = 0, double maxmemfrac = 0.1, double maxtime = 1.0) {
 
@@ -214,6 +234,29 @@ CharacterVector HashPassword(CharacterVector passwd, size_t maxmem = 0, double m
     return b64encode(outbuf, outbuf + 96);
 }
 
+//' Verify a hashed password
+//'
+//' @param hash hash to verify 
+//' @param passwd password to verify
+//' @return
+//' TRUE if password matches hash, otherwise false 
+//' @examples
+//' \dontrun{
+//'
+//' # Hash password using default parameters
+//' hashed <- HashPassword('password')
+//'
+//' VerifyPassword(hashed, "bad password");
+//' FALSE
+//' 
+//' VerifyPassword(hashed, "password")
+//' TRUE
+//' 
+//' }
+//' @seealso {
+//' \code{\link{HashPassword}}
+//' }
+//' @export
 // [[Rcpp::export]]
 bool VerifyPassword(CharacterVector hash, CharacterVector passwd) {
 

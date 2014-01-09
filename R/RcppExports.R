@@ -9,10 +9,53 @@ Decrypt <- function(input, passwd) {
     .Call('scrypt_Decrypt', PACKAGE = 'scrypt', input, passwd)
 }
 
+#' Hash a password
+#'
+#' @param passwd password to hash
+#' @param maxmem max memory (default )
+#' @param maxmemfrac max memory percent (default 0.1)
+#' @param maxtime max cpu time (default 1.0)
+#' @return
+#' base64 encoded password hash
+#' @examples
+#' \dontrun{
+#'
+#' # Hash password using default parameters
+#' HashPassword('passw0rd')
+#'
+#' # Hash password with custom parameters
+#' HashPassword('passw0rd', 0, .25, 5.0)
+#'
+#' }
+#' @seealso \code{\link{VerifyPassword}}
+#' @export
 HashPassword <- function(passwd, maxmem = 0L, maxmemfrac = 0.1, maxtime = 1.0) {
     .Call('scrypt_HashPassword', PACKAGE = 'scrypt', passwd, maxmem, maxmemfrac, maxtime)
 }
 
+#' Verify a hashed password
+#'
+#' @param hash hash to verify 
+#' @param passwd password to verify
+#' @return
+#' TRUE if password matches hash, otherwise false 
+#' @examples
+#' \dontrun{
+#'
+#' # Hash password using default parameters
+#' hashed <- HashPassword('password')
+#'
+#' VerifyPassword(hashed, "bad password");
+#' FALSE
+#' 
+#' VerifyPassword(hashed, "password")
+#' TRUE
+#' 
+#' }
+#' @seealso {
+#' \code{\link{HashPassword}}
+#' }
+#' @export
 VerifyPassword <- function(hash, passwd) {
     .Call('scrypt_VerifyPassword', PACKAGE = 'scrypt', hash, passwd)
 }

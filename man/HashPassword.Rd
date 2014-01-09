@@ -1,0 +1,36 @@
+\name{HashPassword}
+\alias{HashPassword}
+\title{Hash a password}
+\usage{
+HashPassword(passwd, maxmem = 0L, maxmemfrac = 0.1, maxtime = 1)
+}
+\arguments{
+  \item{passwd}{password to hash}
+
+  \item{maxmem}{max memory (default )}
+
+  \item{maxmemfrac}{max memory percent (default 0.1)}
+
+  \item{maxtime}{max cpu time (default 1.0)}
+}
+\value{
+base64 encoded password hash
+}
+\description{
+Hash a password
+}
+\examples{
+\dontrun{
+
+# Hash password using default parameters
+HashPassword('passw0rd')
+
+# Hash password with custom parameters
+HashPassword('passw0rd', 0, .25, 5.0)
+
+}
+}
+\seealso{
+\code{\link{VerifyPassword}}
+}
+
