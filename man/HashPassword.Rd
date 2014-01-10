@@ -24,7 +24,7 @@ Hash a password
 HashPassword('passw0rd')
 
 # Hash password with custom parameters
-HashPassword('passw0rd', 0, .25, 5.0)
+HashPassword('passw0rd', maxmem=.25, maxtime=5.0)
 
 }
 }

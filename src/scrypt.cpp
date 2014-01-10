@@ -102,7 +102,7 @@ static int getparams(double maxmem, double maxtime, int *logN, uint32_t *r, uint
 //' HashPassword('passw0rd')
 //'
 //' # Hash password with custom parameters
-//' HashPassword('passw0rd', 0, .25, 5.0)
+//' HashPassword('passw0rd', maxmem=.25, maxtime=5.0)
 //'
 //' }
 //' @seealso \code{\link{VerifyPassword}}
@@ -260,7 +260,7 @@ RawVector Crypt(RawVector passwd, RawVector salt, uint32_t n, uint32_t r, uint32
     if (crypto_scrypt(passwdbuf.data(), passwdbuf.size(), saltbuf.data(), saltbuf.size(), (uint64_t)n, r, p, outbuf, length)) {
         stop("scrypt error");
     }
-    
+
     RawVector out(length);
     std::copy(outbuf, outbuf + length, out.begin());
     return out;
