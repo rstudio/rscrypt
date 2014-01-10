@@ -20,7 +20,7 @@ To install directly from GitHub, run this:
 ```
 if (!require("devtools"))
     install.packages("devtools")
-devtools::install_github("kippandrew/rscrypt")
+devtools::install_github("rstudio/rscrypt")
 ```
 
 ## Usage
