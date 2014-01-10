@@ -1,6 +1,8 @@
 #include <Rcpp.h>
 
 #if defined(_WIN32)
+#undef Realloc
+#undef Free
 #include <Windows.h>
 
 #elif defined(__unix__) || defined(__unix) || defined(unix) || (defined(__APPLE__) && defined(__MACH__))
