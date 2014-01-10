@@ -1,14 +1,18 @@
 Package: scrypt
 Type: Package
-Title: scrypt key derivation function for R
-Version: 0.1.99
-Date: 2013-12-20
+Title: scrypt key derivation functions for R
+Version: 0.1.0
+Date: 2014-1-10
 Author: RStudio, Inc.; Colin Percival
 Copyright: RStudio, Inc.; Colin Percival
 Maintainer: Andy Kipp <andy@rstudio.com>
-Description: R functions for Colin Percival's Scrypt key derivation utility
-License: GPL-3 | file LICENSE
+Description: scrypt is an R package for working with scrypt. Scrypt is a
+    password-based key derivation function created by Colin Percival. The
+    algorithm was specifically designed to make it costly to perform
+    large-scale custom hardware attacks by requiring large amounts of memory.
+License: BSD | file LICENSE
 Depends:
+    R (>= 2.15.1),
     Rcpp (>= 0.10.6)
 URL: https://github.com/kippandrew/rscrypt
 LinkingTo: Rcpp

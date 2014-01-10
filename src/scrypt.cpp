@@ -12,7 +12,7 @@ extern "C" {
 using namespace Rcpp;
 
 /*
- * Calcualte the scrypt parameters for this platform
+ * Calculate the scrypt parameters for this platform
  *
  * This function is derived from Colin Percival's scrypt reference code
  */
@@ -94,8 +94,7 @@ static int getparams(double maxmem, double maxtime, int *logN, uint32_t *r, uint
 //' @param passwd password to hash
 //' @param maxmemc max memory percent (default 0.1)
 //' @param maxtime max cpu time (default 1.0)
-//' @return
-//' base64 encoded password hash
+//' @return base64 encoded hash
 //' @examples
 //' \dontrun{
 //'
@@ -107,6 +106,7 @@ static int getparams(double maxmem, double maxtime, int *logN, uint32_t *r, uint
 //'
 //' }
 //' @seealso \code{\link{VerifyPassword}}
+//' @export
 // [[Rcpp::export]]
 CharacterVector HashPassword(CharacterVector passwd, double maxmem = 0.1, double maxtime = 1.0) {
 
@@ -171,10 +171,10 @@ CharacterVector HashPassword(CharacterVector passwd, double maxmem = 0.1, double
 
 //' Verify a hashed password
 //'
-//' @param hash hash to verify 
+//' @param hash base64 hash to verify
 //' @param passwd password to verify
 //' @return
-//' TRUE if password matches hash, otherwise false 
+//' TRUE if password matches hash, otherwise FALSE
 //' @examples
 //' \dontrun{
 //'
@@ -191,6 +191,7 @@ CharacterVector HashPassword(CharacterVector passwd, double maxmem = 0.1, double
 //' @seealso {
 //' \code{\link{HashPassword}}
 //' }
+//' @export
 // [[Rcpp::export]]
 bool VerifyPassword(CharacterVector hash, CharacterVector passwd) {
 
@@ -247,6 +248,8 @@ bool VerifyPassword(CharacterVector hash, CharacterVector passwd) {
     return true; // Success
 }
 
+//' @useDynLib scrypt
+//' @export
 // [[Rcpp::export]]
 RawVector Crypt(RawVector passwd, RawVector salt, uint32_t n, uint32_t r, uint32_t p, uint32_t length = 64) {
     uint8_t outbuf[length];

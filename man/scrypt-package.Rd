@@ -4,7 +4,7 @@
 \alias{rscrypt}
 \docType{package}
 \title{
-    scrypt key derivation function for R
+    scrypt key derivation functions for R
 }
 \description{
     scrypt is an R package for working with scrypt. Scrypt is a password-based key

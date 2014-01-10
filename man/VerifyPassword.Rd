@@ -5,12 +5,12 @@
 VerifyPassword(hash, passwd)
 }
 \arguments{
-  \item{hash}{hash to verify}
+  \item{hash}{base64 hash to verify}
 
   \item{passwd}{password to verify}
 }
 \value{
-TRUE if password matches hash, otherwise false
+TRUE if password matches hash, otherwise FALSE
 }
 \description{
 Verify a hashed password

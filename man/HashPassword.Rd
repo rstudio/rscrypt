@@ -12,7 +12,7 @@ HashPassword(passwd, maxmem = 0.1, maxtime = 1)
   \item{maxtime}{max cpu time (default 1.0)}
 }
 \value{
-base64 encoded password hash
+base64 encoded hash
 }
 \description{
 Hash a password

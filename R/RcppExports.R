@@ -6,8 +6,7 @@
 #' @param passwd password to hash
 #' @param maxmemc max memory percent (default 0.1)
 #' @param maxtime max cpu time (default 1.0)
-#' @return
-#' base64 encoded password hash
+#' @return base64 encoded hash
 #' @examples
 #' \dontrun{
 #'
@@ -19,16 +18,17 @@
 #'
 #' }
 #' @seealso \code{\link{VerifyPassword}}
+#' @export
 HashPassword <- function(passwd, maxmem = 0.1, maxtime = 1.0) {
     .Call('scrypt_HashPassword', PACKAGE = 'scrypt', passwd, maxmem, maxtime)
 }
 
 #' Verify a hashed password
 #'
-#' @param hash hash to verify 
+#' @param hash base64 hash to verify
 #' @param passwd password to verify
 #' @return
-#' TRUE if password matches hash, otherwise false 
+#' TRUE if password matches hash, otherwise FALSE
 #' @examples
 #' \dontrun{
 #'
@@ -45,10 +45,13 @@ HashPassword <- function(passwd, maxmem = 0.1, maxtime = 1.0) {
 #' @seealso {
 #' \code{\link{HashPassword}}
 #' }
+#' @export
 VerifyPassword <- function(hash, passwd) {
     .Call('scrypt_VerifyPassword', PACKAGE = 'scrypt', hash, passwd)
 }
 
+#' @useDynLib scrypt
+#' @export
 Crypt <- function(passwd, salt, n, r, p, length = 64L) {
     .Call('scrypt_Crypt', PACKAGE = 'scrypt', passwd, salt, n, r, p, length)
 }
