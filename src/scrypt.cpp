@@ -1,41 +1,52 @@
 #include <Rcpp.h>
-#include <fcntl.h>
-
-#ifdef __MINGW32__
-#include <windows.h>
-#endif
 
 #include "base64.hpp"
+#include "util.hpp"
 
 extern "C" {
     #include "util/sysendian.h"
-    #include "util/memlimit.c"
-    #include "crypto/crypto_scrypt.h" 
     #include "crypto/sha256.h"
-    #include "scryptenc/scryptenc_cpuperf.h"
+    #include "crypto/crypto_scrypt.h"
 }
 
 using namespace Rcpp;
 
 /*
- * Given maxmem, maxmemfrac and maxtime, this functions calculates the N,r,p variables.
- * This is copied directly from Colin Percival's srypt reference code
+ * Calcualte the scrypt parameters for this platform
+ *
+ * This function is derived from Colin Percival's scrypt reference code
  */
-static int getparams(size_t maxmem, double maxmemfrac, double maxtime, int * logN, uint32_t * r, uint32_t * p) {
+static int getparams(double maxmem, double maxtime, int *logN, uint32_t *r, uint32_t *p) {
     // Note: logN (as opposed to N) is calculated here. This is because it is compact (it can be represented by an int)
     //       and it is easy (and quick) to convert to N by right shifting bits
+    size_t totalmem;
     size_t memlimit;
     double opps;
     double opslimit;
     double maxN, maxrp;
     int rc;
 
+    /* Get available memory */
+    if ((rc = getmemlimit(&totalmem)) != 0) {
+        return (rc);
+    }
+
     /* Figure out how much memory to use. */
-    if (memtouse(maxmem, maxmemfrac, &memlimit))
-        return (1);
+    if (maxmem > 0.5 || maxmem == 0)
+        memlimit = totalmem * 0.5;
+    else
+        memlimit = totalmem * maxmem;
+
+    /* Minimum amount of memory os 1Mib */
+    if (memlimit < 1048576) 
+        memlimit = 1048576;
+
+#ifdef DEBUG
+    REprintf("totalmem=%llu, memlimit=%llu\n", totalmem, memlimit);
+#endif
 
     /* Figure out how fast the CPU is. */
-    if ((rc = scryptenc_cpuperf(&opps)) != 0)
+    if ((rc = getcpuperf(&opps)) != 0)
         return (rc);
     opslimit = opps * maxtime;
 
@@ -78,86 +89,10 @@ static int getparams(size_t maxmem, double maxmemfrac, double maxtime, int * log
     return (0);
 }
 
-/*
- * Obtains salt for password hash.
- * This function is derived from Colin Percival's scrypt reference code
- */
-static int getsalt(uint8_t salt[32]) {
-
-    uint8_t *buf = salt;
-    size_t buflen = 32;
-
-#ifdef __MINGW32__
-
-    HCRYPTPROV hCryptCtx;
-
-    if (CryptAcquireContext(&hCryptCtx, NULL, NULL, PROV_RSA_FULL, 0)) {
-        if (!CryptGenRandom(hCryptCtx, buflen, buf))
-            goto err;
-        CryptReleaseContext(hCryptCtx, 0);
-    } else {
-        goto err;
-    }
-
-#else
-
-    int fd;
-    ssize_t lenread;
-
-    /* Open /dev/urandom */
-    if ((fd = open("/dev/urandom", O_RDONLY)) == -1)
-        goto err;
-
-    /* Read bytes until we have filled the buffer */
-    while (buflen > 0) {
-        if ((lenread = read(fd, buf, buflen)) == -1)
-            goto close;
-
-        /* The random device should never EOF */
-        if (lenread == 0)
-            goto close;
-
-        /* We're partly done */
-        buf += lenread;
-        buflen -= lenread;
-    }
-
-    /* Close the device */
-    while (close(fd) == -1) {
-        if (errno != EINTR)
-            goto err;
-    }
-
-    /* Success! */
-    return (0);
-
-close:
-    close(fd);
-
-#endif
-
-err:
-    /* Failure! */
-    return (4);
-}
-
-// [[Rcpp::export]]
-RawVector Encrypt(RawVector input, CharacterVector passwd, size_t maxmem = 0, double maxmemfrac = 0.1, double maxtime = 1.0) {
-    RawVector out;
-    return out;
-}
-
-// [[Rcpp::export]]
-RawVector Decrypt(RawVector input, CharacterVector passwd) {
-    RawVector out;
-    return out;
-}
-
 //' Hash a password
 //'
 //' @param passwd password to hash
-//' @param maxmem max memory (default )
-//' @param maxmemfrac max memory percent (default 0.1)
+//' @param maxmemc max memory percent (default 0.1)
 //' @param maxtime max cpu time (default 1.0)
 //' @return
 //' base64 encoded password hash
@@ -172,13 +107,12 @@ RawVector Decrypt(RawVector input, CharacterVector passwd) {
 //'
 //' }
 //' @seealso \code{\link{VerifyPassword}}
-//' @export
 // [[Rcpp::export]]
-CharacterVector HashPassword(CharacterVector passwd, size_t maxmem = 0, double maxmemfrac = 0.1, double maxtime = 1.0) {
+CharacterVector HashPassword(CharacterVector passwd, double maxmem = 0.1, double maxtime = 1.0) {
 
     uint8_t outbuf[96];
     int logN=0;
-    uint64_t N=0;
+    uint64_t n=0;
     uint32_t r=0;
     uint32_t p=0;
     uint8_t salt[32];
@@ -190,22 +124,23 @@ CharacterVector HashPassword(CharacterVector passwd, size_t maxmem = 0, double m
     int rc;
 
     /* Calculate logN, r, p */
-    if ((rc = getparams(maxmem, maxmemfrac, maxtime, &logN, &r, &p) != 0))
+    if ((rc = getparams(maxmem, maxtime, &logN, &r, &p) != 0))
         return (rc);
 
     /* Get Some Salt */
     if ((rc = getsalt(salt)) != 0)
         return (rc); 
 
-    /* calculate N */
-    N = (uint64_t) 1 << logN;
+    /* calculate n */
+    n = (uint64_t) 1 << logN;
 
-    Rprintf("N=%d, r=%d, p=%d\n", logN, r, p);
+#ifdef DEBUG
+    REprintf("n=%llu, r=%d, p=%d\n", n, r, p);
+#endif
 
     /* Generate the derived key */
     std::string data = as<std::string>(passwd);
-    N = (uint64_t) 1 << logN;
-    if (crypto_scrypt((const uint8_t*)data.c_str(), (size_t)data.length(), salt, 32, N, r, p, key, 64)) {
+    if (crypto_scrypt((const uint8_t*)data.c_str(), (size_t)data.length(), salt, 32, n, r, p, key, 64)) {
         Rcerr << "Error hashing password: scrypt error." << std::endl;
         return false;
     }
@@ -256,13 +191,12 @@ CharacterVector HashPassword(CharacterVector passwd, size_t maxmem = 0, double m
 //' @seealso {
 //' \code{\link{HashPassword}}
 //' }
-//' @export
 // [[Rcpp::export]]
 bool VerifyPassword(CharacterVector hash, CharacterVector passwd) {
 
     uint8_t inbuf[96];
     int logN=0;
-    uint64_t N=0;
+    uint64_t n=0;
     uint32_t r=0;
     uint32_t p=0;
     uint8_t salt[32];
@@ -282,7 +216,7 @@ bool VerifyPassword(CharacterVector hash, CharacterVector passwd) {
     std::copy(b.begin(), b.end(), inbuf);
 
     /* Parse N, r, p, salt */
-    N = (uint64_t)1 << inbuf[7];
+    n = (uint64_t)1 << inbuf[7];
     r = be32dec(&inbuf[8]);
     p = be32dec(&inbuf[12]);
     memcpy(salt, &inbuf[16], 32);
@@ -298,7 +232,7 @@ bool VerifyPassword(CharacterVector hash, CharacterVector passwd) {
 
     /* Compute Derived Key */
     std::string data = as<std::string>(passwd);
-    if (crypto_scrypt((const uint8_t*)data.c_str(), (size_t)data.length(), salt, 32, N, r, p, key, 64)) {
+    if (crypto_scrypt((const uint8_t*)data.c_str(), (size_t)data.length(), salt, 32, n, r, p, key, 64)) {
         Rcerr << "Error verifying password: scrypt error." << std::endl;
         return false;
     }

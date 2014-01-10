@@ -2,14 +2,12 @@
 \alias{HashPassword}
 \title{Hash a password}
 \usage{
-HashPassword(passwd, maxmem = 0L, maxmemfrac = 0.1, maxtime = 1)
+HashPassword(passwd, maxmem = 0.1, maxtime = 1)
 }
 \arguments{
   \item{passwd}{password to hash}
 
-  \item{maxmem}{max memory (default )}
-
-  \item{maxmemfrac}{max memory percent (default 0.1)}
+  \item{maxmemc}{max memory percent (default 0.1)}
 
   \item{maxtime}{max cpu time (default 1.0)}
 }
