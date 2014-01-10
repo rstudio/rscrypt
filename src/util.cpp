@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 
 #if defined(_WIN32)
+// See: http://stackoverflow.com/questions/11588765/using-rcpp-with-windows-specific-includes
 #undef Realloc
 #undef Free
 #include <Windows.h>
