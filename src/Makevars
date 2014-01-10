@@ -1,5 +1,5 @@
 PKG_LIBS = `$(R_HOME)/bin/Rscript -e "Rcpp:::LdFlags()"` ./libscrypt.a
-PKG_CXXFLAGS = `$(R_HOME)/bin/Rscript -e "Rcpp:::CxxFlags()"` -I./scrypt-1.1.6/ -I./scrypt-1.1.6/lib -DHAVE_CONFIG_H -DDEBUG
+PKG_CXXFLAGS = `$(R_HOME)/bin/Rscript -e "Rcpp:::CxxFlags()"` -I./scrypt-1.1.6/ -I./scrypt-1.1.6/lib -DHAVE_CONFIG_H
 
 .PHONY: all clean
 

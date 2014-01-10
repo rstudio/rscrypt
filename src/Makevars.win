@@ -9,7 +9,6 @@ $(SHLIB): libscrypt.a
 
 libscrypt.a:
 	(cd scrypt-1.1.6 && $(CC) -I. -I./lib/crypto/ -I./lib/util/ $(CFLAGS) $(CPICFLAGS) -o lib/crypto/sha256.o -c lib/crypto/sha256.c)
-	(cd scrypt-1.1.6 && $(CC) -I. -I./lib/crypto/ -I./lib/util/ $(CFLAGS) $(CPICFLAGS) -o lib/crypto/crypto_aesctr.o -c lib/crypto/crypto_aesctr.c)
 	(cd scrypt-1.1.6 && $(CC) -I. -I./lib/crypto/ -I./lib/util/ $(CFLAGS) $(CPICFLAGS) -o lib/crypto/crypto_scrypt-ref.o -c lib/crypto/crypto_scrypt-ref.c)
 	(cd scrypt-1.1.6 && $(AR) cq ../libscrypt.a lib/crypto/sha256.o lib/crypto/crypto_scrypt-ref.o)
 
