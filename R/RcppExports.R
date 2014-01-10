@@ -19,7 +19,6 @@
 #'
 #' }
 #' @seealso \code{\link{VerifyPassword}}
-#' @export
 HashPassword <- function(passwd, maxmem = 0.1, maxtime = 1.0) {
     .Call('scrypt_HashPassword', PACKAGE = 'scrypt', passwd, maxmem, maxtime)
 }
@@ -46,7 +45,6 @@ HashPassword <- function(passwd, maxmem = 0.1, maxtime = 1.0) {
 #' @seealso {
 #' \code{\link{HashPassword}}
 #' }
-#' @export
 VerifyPassword <- function(hash, passwd) {
     .Call('scrypt_VerifyPassword', PACKAGE = 'scrypt', hash, passwd)
 }
