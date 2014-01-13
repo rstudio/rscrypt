@@ -27,15 +27,15 @@ devtools::install_github("rstudio/rscrypt")
 
 Hash a password:
 ```
-hashed <- scrypt::HashPassword("good password")
+hashed <- scrypt::hashPassword("good password")
 ```
 
 Verify a hashed password:
 ```
-scrypt::VerifyPassword(hashed, "bad bassword")
+scrypt::verifyPassword(hashed, "bad bassword")
 [1] FALSE
 
-scrypt::VerifyPassword(hashed, "good password")
+scrypt::verifyPassword(hashed, "good password")
 [1] TRUE
 ```
 
@@ -43,13 +43,13 @@ Key derivation function
 ```
 password <- charToRaw("my password")
 salt <- sample(1:10, 32, replace=TRUE)
-scrypt::Crypt(password, salt, 65536, 8, 1)
+scrypt::scrypt(password, salt, 65536, 8, 1)
 ```
 
 ## Password Hashing
 
-The `HashPassword` and `VerifyPassword` functions are designed be compatible with the
-node.js scrypt package. The output from `HashPassword` is a base64 encoded string
+The `hashPassword` and `verifyPassword` functions are designed be compatible with the
+node.js scrypt package. The output from `hashPassword` is a base64 encoded string
 containing multiple pieces of information that are required to verify the hash later on.
 Included in this output are the n, r and p parameters for the scrypt function, as well as
 a checksum and HMAC for verifying the integrity of the hash. Below is the format the hash.
