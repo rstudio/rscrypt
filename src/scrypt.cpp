@@ -186,7 +186,6 @@ CharacterVector hashPassword(const std::string& passwd, double maxmem = 0.1, dou
 //' # verify correct password 
 //' verifyPassword(hashed, "password")
 //' 
-//' }
 //' @seealso {
 //' \code{\link{hashPassword}}
 //' }

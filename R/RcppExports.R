@@ -13,7 +13,7 @@
 #' hashPassword('passw0rd')
 #'
 #' # Hash password with custom parameters
-#' hashPassword('passw0rd', maxmem=.25, maxtime=5.0)
+#' hashPassword('passw0rd', maxmem=0.25, maxtime=5.0)
 #'
 #' @seealso \code{\link{verifyPassword}}
 #' @export
@@ -37,7 +37,6 @@ hashPassword <- function(passwd, maxmem = 0.1, maxtime = 1.0) {
 #' # verify correct password 
 #' verifyPassword(hashed, "password")
 #' 
-#' }
 #' @seealso {
 #' \code{\link{hashPassword}}
 #' }
