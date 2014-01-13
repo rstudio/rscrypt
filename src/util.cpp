@@ -183,7 +183,7 @@ int getcpuperf(double *opps)
 /*
  * Get available memory
  *
- * This function is dervied from:
+ * This function is derived from:
  * http://nadeausoftware.com/articles/2012/09/c_c_tip_how_get_physical_memory_size_system
  */
 int getmemlimit(size_t *memlimit) {

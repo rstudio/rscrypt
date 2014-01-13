@@ -1,8 +1,8 @@
-\name{VerifyPassword}
-\alias{VerifyPassword}
+\name{verifyPassword}
+\alias{verifyPassword}
 \title{Verify a hashed password}
 \usage{
-VerifyPassword(hash, passwd)
+verifyPassword(hash, passwd)
 }
 \arguments{
   \item{hash}{base64 hash to verify}
@@ -16,20 +16,18 @@ TRUE if password matches hash, otherwise FALSE
 Verify a hashed password
 }
 \examples{
-\dontrun{
-
 # Hash password using default parameters
-hashed <- HashPassword('password')
+hashed <- hashPassword("password")
 
-VerifyPassword(hashed, "bad password");
-FALSE
+# verify invalid password
+verifyPassword(hashed, "bad password");
 
-VerifyPassword(hashed, "password")
-TRUE
+# verify correct password
+verifyPassword(hashed, "password")
 
 }
 }
 \seealso{
-{ \code{\link{HashPassword}} }
+{ \code{\link{hashPassword}} }
 }
 

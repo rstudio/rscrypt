@@ -33,5 +33,5 @@ decrypting data. Additionally, the scrypt function can be used directly.
 }
 \keyword{ package }
 \seealso{
-  \code{\link{HashPassword}}, \code{\link{VerifyPassword}} and \code{\link{Crypt}}
+  \code{\link{hashPassword}}, \code{\link{verifyPassword}} and \code{\link{scrypt}}
 }

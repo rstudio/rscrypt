@@ -1,8 +1,8 @@
-\name{HashPassword}
-\alias{HashPassword}
+\name{hashPassword}
+\alias{hashPassword}
 \title{Hash a password}
 \usage{
-HashPassword(passwd, maxmem = 0.1, maxtime = 1)
+hashPassword(passwd, maxmem = 0.1, maxtime = 1)
 }
 \arguments{
   \item{passwd}{password to hash}
@@ -18,17 +18,13 @@ base64 encoded hash
 Hash a password
 }
 \examples{
-\dontrun{
-
 # Hash password using default parameters
-HashPassword('passw0rd')
+hashPassword('passw0rd')
 
 # Hash password with custom parameters
-HashPassword('passw0rd', maxmem=.25, maxtime=5.0)
-
-}
+hashPassword('passw0rd', maxmem=.25, maxtime=5.0)
 }
 \seealso{
-\code{\link{VerifyPassword}}
+\code{\link{verifyPassword}}
 }
 

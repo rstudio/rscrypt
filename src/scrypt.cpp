@@ -9,14 +9,14 @@ extern "C" {
     #include "crypto/crypto_scrypt.h"
 }
 
-using namespace Rcpp;
+namespace {
 
 /*
  * Calculate the scrypt parameters for this platform
  *
  * This function is derived from Colin Percival's scrypt reference code
  */
-static int getparams(double maxmem, double maxtime, int *logN, uint32_t *r, uint32_t *p) {
+int getparams(double maxmem, double maxtime, int *logN, uint32_t *r, uint32_t *p) {
     // Note: logN (as opposed to N) is calculated here. This is because it is compact (it can be represented by an int)
     //       and it is easy (and quick) to convert to N by right shifting bits
     size_t totalmem;
@@ -37,7 +37,7 @@ static int getparams(double maxmem, double maxtime, int *logN, uint32_t *r, uint
     else
         memlimit = totalmem * maxmem;
 
-    /* Minimum amount of memory os 1Mib */
+    /* Minimum amount of memory is 1Mib */
     if (memlimit < 1048576) 
         memlimit = 1048576;
 
@@ -89,6 +89,10 @@ static int getparams(double maxmem, double maxtime, int *logN, uint32_t *r, uint
     return (0);
 }
 
+} // anonymous namespace
+
+using namespace Rcpp;
+
 //' Hash a password
 //'
 //' @param passwd password to hash
@@ -96,19 +100,17 @@ static int getparams(double maxmem, double maxtime, int *logN, uint32_t *r, uint
 //' @param maxtime max cpu time (default 1.0)
 //' @return base64 encoded hash
 //' @examples
-//' \dontrun{
 //'
 //' # Hash password using default parameters
-//' HashPassword('passw0rd')
+//' hashPassword('passw0rd')
 //'
 //' # Hash password with custom parameters
-//' HashPassword('passw0rd', maxmem=.25, maxtime=5.0)
+//' hashPassword('passw0rd', maxmem=0.25, maxtime=5.0)
 //'
-//' }
-//' @seealso \code{\link{VerifyPassword}}
+//' @seealso \code{\link{verifyPassword}}
 //' @export
 // [[Rcpp::export]]
-CharacterVector HashPassword(CharacterVector passwd, double maxmem = 0.1, double maxtime = 1.0) {
+CharacterVector hashPassword(const std::string& passwd, double maxmem = 0.1, double maxtime = 1.0) {
 
     uint8_t outbuf[96];
     int logN=0;
@@ -139,8 +141,7 @@ CharacterVector HashPassword(CharacterVector passwd, double maxmem = 0.1, double
 #endif
 
     /* Generate the derived key */
-    std::string data = as<std::string>(passwd);
-    if (crypto_scrypt((const uint8_t*)data.c_str(), (size_t)data.length(), salt, 32, n, r, p, key, 64)) {
+    if (crypto_scrypt((const uint8_t*)passwd.c_str(), (size_t)passwd.length(), salt, 32, n, r, p, key, 64)) {
         Rcerr << "Error hashing password: scrypt error." << std::endl;
         return false;
     }
@@ -176,24 +177,22 @@ CharacterVector HashPassword(CharacterVector passwd, double maxmem = 0.1, double
 //' @return
 //' TRUE if password matches hash, otherwise FALSE
 //' @examples
-//' \dontrun{
-//'
 //' # Hash password using default parameters
-//' hashed <- HashPassword('password')
+//' hashed <- hashPassword("password")
 //'
-//' VerifyPassword(hashed, "bad password");
-//' FALSE
+//' # verify invalid password
+//' verifyPassword(hashed, "bad password");
 //' 
-//' VerifyPassword(hashed, "password")
-//' TRUE
+//' # verify correct password 
+//' verifyPassword(hashed, "password")
 //' 
 //' }
 //' @seealso {
-//' \code{\link{HashPassword}}
+//' \code{\link{hashPassword}}
 //' }
 //' @export
 // [[Rcpp::export]]
-bool VerifyPassword(CharacterVector hash, CharacterVector passwd) {
+bool verifyPassword(const std::string& hash, const std::string& passwd) {
 
     uint8_t inbuf[96];
     int logN=0;
@@ -208,8 +207,7 @@ bool VerifyPassword(CharacterVector hash, CharacterVector passwd) {
     HMAC_SHA256_CTX hmac;
 
     /* base64 decode hash */
-    std::string h = as<std::string>(hash);
-    std::string b = b64decode(h.begin(), h.end());
+    std::string b = b64decode(hash.begin(), hash.end());
     if (b.length() < 96) {
         Rcerr << "Error verifying password: hash too short." << std::endl;
         return false;
@@ -232,8 +230,7 @@ bool VerifyPassword(CharacterVector hash, CharacterVector passwd) {
     }
 
     /* Compute Derived Key */
-    std::string data = as<std::string>(passwd);
-    if (crypto_scrypt((const uint8_t*)data.c_str(), (size_t)data.length(), salt, 32, n, r, p, key, 64)) {
+    if (crypto_scrypt((const uint8_t*)passwd.c_str(), (size_t)passwd.length(), salt, 32, n, r, p, key, 64)) {
         Rcerr << "Error verifying password: scrypt error." << std::endl;
         return false;
     }
@@ -251,7 +248,7 @@ bool VerifyPassword(CharacterVector hash, CharacterVector passwd) {
 //' @useDynLib scrypt
 //' @export
 // [[Rcpp::export]]
-RawVector Crypt(RawVector passwd, RawVector salt, uint32_t n, uint32_t r, uint32_t p, uint32_t length = 64) {
+RawVector scrypt(RawVector passwd, RawVector salt, uint32_t n, uint32_t r, uint32_t p, uint32_t length = 64) {
     uint8_t outbuf[length];
 
     const std::vector<uint8_t> passwdbuf = as<std::vector<uint8_t> >(passwd);

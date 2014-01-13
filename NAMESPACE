@@ -1,4 +1,4 @@
-export(Crypt)
-export(HashPassword)
-export(VerifyPassword)
+export(hashPassword)
+export(scrypt)
+export(verifyPassword)
 useDynLib(scrypt)
