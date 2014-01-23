@@ -24,7 +24,6 @@ verifyPassword(hashed, "bad password");
 
 # verify correct password
 verifyPassword(hashed, "password")
-
 }
 \seealso{
 { \code{\link{hashPassword}} }
