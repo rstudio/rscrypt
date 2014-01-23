@@ -1,3 +1,3 @@
 #!/bin/sh
 set -x
-(cd src/scrypt-1.1.6 && rm -f config.h config.status Makefile stamp-h1)
+(cd src/scrypt-1.1.6 && rm -f config.h config.status config.log Makefile stamp-h1)
