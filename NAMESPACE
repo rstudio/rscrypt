@@ -1,4 +1,5 @@
 export(hashPassword)
 export(scrypt)
 export(verifyPassword)
+importFrom(Rcpp)
 useDynLib(scrypt)
