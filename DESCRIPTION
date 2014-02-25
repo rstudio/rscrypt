@@ -9,7 +9,7 @@ Description: scrypt is an R package for working with scrypt. Scrypt is a
     password-based key derivation function created by Colin Percival. The
     algorithm was specifically designed to make it costly to perform
     large-scale custom hardware attacks by requiring large amounts of memory.
-License: BSD | file LICENSE
+License: FreeBSD | file LICENSE
 Depends:
     R (>= 2.15.1)
 URL: https://github.com/rstudio/rscrypt
