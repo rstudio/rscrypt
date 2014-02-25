@@ -7,7 +7,7 @@ hashPassword(passwd, maxmem = 0.1, maxtime = 1)
 \arguments{
   \item{passwd}{password to hash}
 
-  \item{maxmemc}{max memory percent (default 0.1)}
+  \item{maxmem}{max memory percent (default 0.1)}
 
   \item{maxtime}{max cpu time (default 1.0)}
 }

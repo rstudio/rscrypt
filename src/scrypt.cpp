@@ -96,7 +96,7 @@ using namespace Rcpp;
 //' Hash a password
 //'
 //' @param passwd password to hash
-//' @param maxmemc max memory percent (default 0.1)
+//' @param maxmem max memory percent (default 0.1)
 //' @param maxtime max cpu time (default 1.0)
 //' @return base64 encoded hash
 //' @examples
@@ -244,6 +244,7 @@ bool verifyPassword(const std::string& hash, const std::string& passwd) {
     return true; // Success
 }
 
+//' @importFrom Rcpp evalCpp
 //' @useDynLib scrypt
 //' @export
 // [[Rcpp::export]]
