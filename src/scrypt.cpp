@@ -105,7 +105,7 @@ using namespace Rcpp;
 //' hashPassword('passw0rd')
 //'
 //' # Hash password with custom parameters
-//' hashPassword('passw0rd', maxmem=0.25, maxtime=5.0)
+//' hashPassword('passw0rd', maxmem=0.25, maxtime=1.0)
 //'
 //' @seealso \code{\link{verifyPassword}}
 //' @export
