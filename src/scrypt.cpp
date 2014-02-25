@@ -249,16 +249,20 @@ bool verifyPassword(const std::string& hash, const std::string& passwd) {
 //' @export
 // [[Rcpp::export]]
 RawVector scrypt(RawVector passwd, RawVector salt, uint32_t n, uint32_t r, uint32_t p, uint32_t length = 64) {
-    uint8_t outbuf[length];
+    uint8_t *outbuf = new uint8_t[length];
 
     const std::vector<uint8_t> passwdbuf = as<std::vector<uint8_t> >(passwd);
     const std::vector<uint8_t> saltbuf = as<std::vector<uint8_t> >(salt);
 
     if (crypto_scrypt(passwdbuf.data(), passwdbuf.size(), saltbuf.data(), saltbuf.size(), (uint64_t)n, r, p, outbuf, length)) {
+        delete [] outbuf;
         stop("scrypt error");
     }
 
     RawVector out(length);
     std::copy(outbuf, outbuf + length, out.begin());
+    
+    delete [] outbuf;
+    
     return out;
 }

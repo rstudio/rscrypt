@@ -27,11 +27,12 @@ void encodeblock( unsigned char in[3], unsigned char out[4], int len ) {
  * decode 4 '6-bit' characters to 3 8-bit bytes
  */
 void decodeblock(unsigned char in[4], unsigned char out[3], int len) {
-    unsigned char ch[len];
+    unsigned char *ch = new unsigned char[len];
     for (int i = 0; i < 4; i++)
         ch[i] = strchr(cb64, in[i]) - cb64;
 
     out[0] = (ch[0] << 2) + ((ch[1] & 0x30) >> 4);
     out[1] = (len > 2 ? ((ch[1] & 0xf) << 4) + ((ch[2] & 0x3c) >> 2) : 0);
     out[2] = (len > 3 ? ((ch[2] & 0x3) << 6) + ch[3] : 0);
+    delete [] ch;
 }
