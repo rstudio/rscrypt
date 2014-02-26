@@ -209,6 +209,41 @@ int getmemlimit(size_t *memlimit) {
 #elif defined(__unix__) || defined(__unix) || defined(unix) || (defined(__APPLE__) && defined(__MACH__))
     /* UNIX variants. ------------------------------------------- */
 
+    struct rlimit rl;
+	uint64_t memrlimit;
+
+	/* Find the least of... */
+	memrlimit = (uint64_t)(-1);
+
+    /* ... RLIMIT_AS... */
+#ifdef RLIMIT_AS
+	if (getrlimit(RLIMIT_AS, &rl))
+		return -1;
+	if ((rl.rlim_cur != RLIM_INFINITY) && ((uint64_t)rl.rlim_cur < memrlimit))
+		memrlimit = rl.rlim_cur;
+#endif
+
+#ifdef RLIMIT_DATA 
+	/* ... RLIMIT_DATA... */
+	if (getrlimit(RLIMIT_DATA, &rl))
+		return -1;
+	if ((rl.rlim_cur != RLIM_INFINITY) && ((uint64_t)rl.rlim_cur < memrlimit))
+		memrlimit = rl.rlim_cur;
+#endif
+
+	/* ... RLIMIT_RSS. */
+#ifdef RLIMIT_RSS
+    if (getrlimit(RLIMIT_RSS, &rl))
+		return -1;
+	if ((rl.rlim_cur != RLIM_INFINITY) && ((uint64_t)rl.rlim_cur < memrlimit))
+		memrlimit = rl.rlim_cur;
+#endif    
+
+    if (memrlimit < (uint8_t)(-1)) {
+        *memlimit = memrlimit;
+        return 0;
+    }
+
 #if defined(CTL_HW) && (defined(HW_MEMSIZE) || defined(HW_PHYSMEM64))
     int mib[2];
     mib[0] = CTL_HW;
