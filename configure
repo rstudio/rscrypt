@@ -1,3 +1,4 @@
 #!/bin/sh
 set -x
+(cd src/scrypt-1.1.6/ && chmod +x ./configure)
 (cd src/scrypt-1.1.6/ && ./configure)
