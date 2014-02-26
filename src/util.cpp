@@ -222,17 +222,21 @@ int getmemlimit(size_t *memlimit) {
     REprintf("Checking RLIMIT_AS\n");
     if (getrlimit(RLIMIT_AS, &rl))
         return -1;
-    if ((rl.rlim_cur != RLIM_INFINITY) && ((size_t)rl.rlim_cur < memrlimit))
+    if ((rl.rlim_cur != RLIM_INFINITY) && ((size_t)rl.rlim_cur < memrlimit)) {
         memrlimit = rl.rlim_cur;
+        REprintf("RLIMIT_AS = %llu\n", memrlimit);
+    }
 #endif
 
 #ifdef RLIMIT_DATA 
-    REprintf("Checking RLIMIT_DATA\n");
     /* ... RLIMIT_DATA... */
     if (getrlimit(RLIMIT_DATA, &rl))
         return -1;
-    if ((rl.rlim_cur != RLIM_INFINITY) && ((size_t)rl.rlim_cur < memrlimit))
-        memrlimit = rl.rlim_cur;
+    REprintf("Checking RLIMIT_DATA\n");
+    if ((rl.rlim_cur != RLIM_INFINITY) && ((size_t)rl.rlim_cur < memrlimit)) {
+        memrlimit = (size_t)rl.rlim_cur;
+        REprintf("RLIMIT_DATA = %llu\n", memrlimit);
+    }
 #endif
 
     /* ... RLIMIT_RSS. */
@@ -241,8 +245,10 @@ int getmemlimit(size_t *memlimit) {
 
     if (getrlimit(RLIMIT_RSS, &rl))
         return -1;
-    if ((rl.rlim_cur != RLIM_INFINITY) && ((size_t)rl.rlim_cur < memrlimit))
+    if ((rl.rlim_cur != RLIM_INFINITY) && ((size_t)rl.rlim_cur < memrlimit)) {
         memrlimit = rl.rlim_cur;
+        REprintf("RLIMIT_RSS = %llu\n", memrlimit);
+    }
 #endif
 
     REprintf("memrlimit=%llu\n", memrlimit);
