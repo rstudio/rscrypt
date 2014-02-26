@@ -155,15 +155,15 @@ CharacterVector hashPassword(const std::string& passwd, double maxmem = 0.1, dou
     memcpy(&outbuf[16], salt, 32);
 
     /* Add checksum */
-    SHA256_Init(&sha);
-    SHA256_Update(&sha, outbuf, 48);
-    SHA256_Final(tmp, &sha);
+    scrypt_SHA256_Init(&sha);
+    scrypt_SHA256_Update(&sha, outbuf, 48);
+    scrypt_SHA256_Final(tmp, &sha);
     memcpy(&outbuf[48], tmp, 16);
 
     /* Add signature (used for verifying password) */
-    HMAC_SHA256_Init(&hmac, key_hmac, 32);
-    HMAC_SHA256_Update(&hmac, outbuf, 64);
-    HMAC_SHA256_Final(tmp, &hmac);
+    scrypt_HMAC_SHA256_Init(&hmac, key_hmac, 32);
+    scrypt_HMAC_SHA256_Update(&hmac, outbuf, 64);
+    scrypt_HMAC_SHA256_Final(tmp, &hmac);
     memcpy(&outbuf[64], tmp, 32);
 
     // return base64 encoded hash
@@ -220,9 +220,9 @@ bool verifyPassword(const std::string& hash, const std::string& passwd) {
     memcpy(salt, &inbuf[16], 32);
 
     /* Verify header checksum */
-    SHA256_Init(&sha);
-    SHA256_Update(&sha, inbuf, 48);
-    SHA256_Final(tmp, &sha);
+    scrypt_SHA256_Init(&sha);
+    scrypt_SHA256_Update(&sha, inbuf, 48);
+    scrypt_SHA256_Final(tmp, &sha);
     if (memcmp(&inbuf[48], tmp, 16)) {
         Rcerr << "Error verifying password: checksum mismatch." << std::endl;
         return false;
@@ -235,9 +235,9 @@ bool verifyPassword(const std::string& hash, const std::string& passwd) {
     }
 
     /* Check signature (i.e., verify password). */
-    HMAC_SHA256_Init(&hmac, key_hmac, 32);
-    HMAC_SHA256_Update(&hmac, inbuf, 64);
-    HMAC_SHA256_Final(tmp, &hmac);
+    scrypt_HMAC_SHA256_Init(&hmac, key_hmac, 32);
+    scrypt_HMAC_SHA256_Update(&hmac, inbuf, 64);
+    scrypt_HMAC_SHA256_Final(tmp, &hmac);
     if (memcmp(tmp, &inbuf[64], 32))
         return false;
 
