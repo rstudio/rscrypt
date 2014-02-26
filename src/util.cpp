@@ -212,34 +212,40 @@ int getmemlimit(size_t *memlimit) {
     /* UNIX variants. ------------------------------------------- */
 
     struct rlimit rl;
-	size_t memrlimit;
+    size_t memrlimit;
 
-	/* Find the least of... */
-	memrlimit = (uint64_t)(-1);
+    /* Find the least of... */
+    memrlimit = (size_t)(-1);
 
     /* ... RLIMIT_AS... */
 #ifdef RLIMIT_AS
-	if (getrlimit(RLIMIT_AS, &rl))
-		return -1;
+    REprintf("Checking RLIMIT_AS\n");
+    if (getrlimit(RLIMIT_AS, &rl))
+        return -1;
     if ((rl.rlim_cur != RLIM_INFINITY) && ((size_t)rl.rlim_cur < memrlimit))
-		memrlimit = rl.rlim_cur;
+        memrlimit = rl.rlim_cur;
 #endif
 
 #ifdef RLIMIT_DATA 
-	/* ... RLIMIT_DATA... */
-	if (getrlimit(RLIMIT_DATA, &rl))
-		return -1;
-	if ((rl.rlim_cur != RLIM_INFINITY) && ((size_t)rl.rlim_cur < memrlimit))
-		memrlimit = rl.rlim_cur;
+    REprintf("Checking RLIMIT_DATA\n");
+    /* ... RLIMIT_DATA... */
+    if (getrlimit(RLIMIT_DATA, &rl))
+        return -1;
+    if ((rl.rlim_cur != RLIM_INFINITY) && ((size_t)rl.rlim_cur < memrlimit))
+        memrlimit = rl.rlim_cur;
 #endif
 
-	/* ... RLIMIT_RSS. */
+    /* ... RLIMIT_RSS. */
 #ifdef RLIMIT_RSS
+    REprintf("Checking RLIMIT_RSS\n");
+
     if (getrlimit(RLIMIT_RSS, &rl))
-		return -1;
-	if ((rl.rlim_cur != RLIM_INFINITY) && ((size_t)rl.rlim_cur < memrlimit))
-		memrlimit = rl.rlim_cur;
-#endif    
+        return -1;
+    if ((rl.rlim_cur != RLIM_INFINITY) && ((size_t)rl.rlim_cur < memrlimit))
+        memrlimit = rl.rlim_cur;
+#endif
+
+    REprintf("memrlimit=%llu\n", memrlimit);
 
     if (memrlimit < (size_t)(-1)) {
         *memlimit = memrlimit;
