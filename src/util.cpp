@@ -10,6 +10,8 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <sys/param.h>
+#include <sys/resource.h>
+
 #if defined(BSD)
 #include <sys/sysctl.h>
 #endif
