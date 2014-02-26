@@ -212,7 +212,7 @@ int getmemlimit(size_t *memlimit) {
     /* UNIX variants. ------------------------------------------- */
 
     struct rlimit rl;
-	uint64_t memrlimit;
+	size_t memrlimit;
 
 	/* Find the least of... */
 	memrlimit = (uint64_t)(-1);
@@ -221,7 +221,7 @@ int getmemlimit(size_t *memlimit) {
 #ifdef RLIMIT_AS
 	if (getrlimit(RLIMIT_AS, &rl))
 		return -1;
-	if ((rl.rlim_cur != RLIM_INFINITY) && ((uint64_t)rl.rlim_cur < memrlimit))
+    if ((rl.rlim_cur != RLIM_INFINITY) && ((size_t)rl.rlim_cur < memrlimit))
 		memrlimit = rl.rlim_cur;
 #endif
 
@@ -229,7 +229,7 @@ int getmemlimit(size_t *memlimit) {
 	/* ... RLIMIT_DATA... */
 	if (getrlimit(RLIMIT_DATA, &rl))
 		return -1;
-	if ((rl.rlim_cur != RLIM_INFINITY) && ((uint64_t)rl.rlim_cur < memrlimit))
+	if ((rl.rlim_cur != RLIM_INFINITY) && ((size_t)rl.rlim_cur < memrlimit))
 		memrlimit = rl.rlim_cur;
 #endif
 
@@ -237,11 +237,11 @@ int getmemlimit(size_t *memlimit) {
 #ifdef RLIMIT_RSS
     if (getrlimit(RLIMIT_RSS, &rl))
 		return -1;
-	if ((rl.rlim_cur != RLIM_INFINITY) && ((uint64_t)rl.rlim_cur < memrlimit))
+	if ((rl.rlim_cur != RLIM_INFINITY) && ((size_t)rl.rlim_cur < memrlimit))
 		memrlimit = rl.rlim_cur;
 #endif    
 
-    if (memrlimit < (uint8_t)(-1)) {
+    if (memrlimit < (size_t)(-1)) {
         *memlimit = memrlimit;
         return 0;
     }
