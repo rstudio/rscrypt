@@ -3,3 +3,4 @@
 ^src/scrypt-1.1.6/.*\.o$
 ^src/scrypt-1.1.6/.*\.so$
 ^src/scrypt.dll$
+.travis.yml
