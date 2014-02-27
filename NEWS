@@ -1,0 +1,13 @@
+scrypt 0.1.1
+--------------------------------------------------------------------------------
+
+* Require R >= 3.0
+
+* Fix configure script permission (can not install on RStudio Server)
+
+* Fix namespace collision with OpenSSL (causes RStudio Server crash)
+
+scrypt 0.1.0
+--------------------------------------------------------------------------------
+
+* Initial Release
