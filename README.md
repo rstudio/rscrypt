@@ -1,5 +1,7 @@
 # rscrypt
 
+[![Build Status](https://travis-ci.org/rstudio/rscrypt.png?branch=master)](https://travis-ci.org/rstudio/rscrypt)
+
 rscrypt is an R package for a collection of scrypt cryptographic functions. Scrypt is a
 password-based key derivation function created by Colin Percival. The algorithm was specifically
 designed to make it costly to perform large-scale custom hardware attacks by requiring large
