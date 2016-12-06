@@ -1,7 +1,7 @@
 Package: scrypt
 Type: Package
 Title: scrypt key derivation functions for R
-Version: 0.1.1
+Version: 0.1.2
 Author: RStudio, Inc.; Colin Percival
 Copyright: RStudio, Inc.; Colin Percival
 Maintainer: Andy Kipp <andy@rstudio.com>
