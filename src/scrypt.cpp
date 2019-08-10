@@ -38,7 +38,7 @@ int getparams(double maxmem, double maxtime, int *logN, uint32_t *r, uint32_t *p
         memlimit = totalmem * maxmem;
 
     /* Minimum amount of memory is 1Mib */
-    if (memlimit < 1048576) 
+    if (memlimit < 1048576)
         memlimit = 1048576;
 
 #ifdef DEBUG
@@ -131,7 +131,7 @@ CharacterVector hashPassword(const std::string& passwd, double maxmem = 0.1, dou
 
     /* Get Some Salt */
     if ((rc = getsalt(salt)) != 0)
-        return (rc); 
+        return (rc);
 
     /* calculate n */
     n = (uint64_t) 1 << logN;
@@ -182,10 +182,10 @@ CharacterVector hashPassword(const std::string& passwd, double maxmem = 0.1, dou
 //'
 //' # verify invalid password
 //' verifyPassword(hashed, "bad password");
-//' 
-//' # verify correct password 
+//'
+//' # verify correct password
 //' verifyPassword(hashed, "password")
-//' 
+//'
 //' @seealso {
 //' \code{\link{hashPassword}}
 //' }
@@ -261,8 +261,8 @@ RawVector scrypt(RawVector passwd, RawVector salt, uint32_t n, uint32_t r, uint3
 
     RawVector out(length);
     std::copy(outbuf, outbuf + length, out.begin());
-    
+
     delete [] outbuf;
-    
+
     return out;
 }

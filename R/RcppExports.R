@@ -18,7 +18,7 @@
 #' @seealso \code{\link{verifyPassword}}
 #' @export
 hashPassword <- function(passwd, maxmem = 0.1, maxtime = 1.0) {
-    .Call('scrypt_hashPassword', PACKAGE = 'scrypt', passwd, maxmem, maxtime)
+    .Call(`_scrypt_hashPassword`, passwd, maxmem, maxtime)
 }
 
 #' Verify a hashed password
@@ -33,22 +33,22 @@ hashPassword <- function(passwd, maxmem = 0.1, maxtime = 1.0) {
 #'
 #' # verify invalid password
 #' verifyPassword(hashed, "bad password");
-#' 
-#' # verify correct password 
+#'
+#' # verify correct password
 #' verifyPassword(hashed, "password")
-#' 
+#'
 #' @seealso {
 #' \code{\link{hashPassword}}
 #' }
 #' @export
 verifyPassword <- function(hash, passwd) {
-    .Call('scrypt_verifyPassword', PACKAGE = 'scrypt', hash, passwd)
+    .Call(`_scrypt_verifyPassword`, hash, passwd)
 }
 
 #' @importFrom Rcpp evalCpp
 #' @useDynLib scrypt
 #' @export
 scrypt <- function(passwd, salt, n, r, p, length = 64L) {
-    .Call('scrypt_scrypt', PACKAGE = 'scrypt', passwd, salt, n, r, p, length)
+    .Call(`_scrypt_scrypt`, passwd, salt, n, r, p, length)
 }
 
