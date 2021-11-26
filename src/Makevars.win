@@ -1,8 +1,8 @@
 SCRYPT_FLAGS = -I./scrypt-1.1.6/ -I./scrypt-1.1.6/lib -I./scrypt-1.1.6/lib/util
 
 PKG_CFLAGS = $(SCRYPT_FLAGS) 
-PKG_CXXFLAGS = $(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e "Rcpp:::CxxFlags()") $(SCRYPT_FLAGS)
-PKG_LIBS = $(shell "${R_HOME}/bin${R_ARCH_BIN}/Rscript.exe" -e "Rcpp:::LdFlags()") $(SCRYPT_FLAGS)
+PKG_CXXFLAGS = $(SCRYPT_FLAGS)
+PKG_LIBS = $(SCRYPT_FLAGS)
 
 SOURCES = scrypt-1.1.6/lib/crypto/sha256.c \
 	scrypt-1.1.6/lib/crypto/crypto_scrypt-ref.c \
