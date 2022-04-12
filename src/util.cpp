@@ -128,6 +128,7 @@ int getcpuperf(double *opps)
     struct timespec st;
     double resd, diffd;
     uint64_t i = 0;
+    uint8_t salt[32] = {0};
 
     /* Get the clock resolution. */
     if (getclockres(&resd))
@@ -142,7 +143,7 @@ int getcpuperf(double *opps)
         return (2);
     do {
         /* Do an scrypt. */
-        if (crypto_scrypt(NULL, 0, NULL, 0, 16, 1, 1, NULL, 0))
+        if (crypto_scrypt(NULL, 0, salt, 0, 16, 1, 1, NULL, 0))
             return (3);
 
         /* Has the clock ticked? */
@@ -157,7 +158,7 @@ int getcpuperf(double *opps)
         return (2);
     do {
         /* Do an scrypt. */
-        if (crypto_scrypt(NULL, 0, NULL, 0, 128, 1, 1, NULL, 0))
+        if (crypto_scrypt(NULL, 0, salt, 0, 128, 1, 1, NULL, 0))
             return (3);
 
         /* We invoked the salsa20/8 core 512 times. */
@@ -171,7 +172,7 @@ int getcpuperf(double *opps)
     } while (1);
 
 #ifdef DEBUG
-    REprintf("%ju salsa20/8 cores performed in %f seconds\n", 
+    REprintf("%ju salsa20/8 cores performed in %f seconds\n",
         (uintmax_t)i, diffd);
 #endif
 
@@ -284,10 +285,10 @@ int getsalt(uint8_t salt[32]) {
     } else {
         goto err;
     }
-    
+
     /* Success! */
     return (0);
-    
+
 #else
 
     int fd;
