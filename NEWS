@@ -1,7 +1,10 @@
-scrypt 0.1.4  (UNRELEASED)
+scrypt 0.1.4
 --------------------------------------------------------------------------------
 
 * Removed redundant usages of Rcpp:::CxxFlags() and Rcpp:::LdFlags()
+* Fix UBSAN issue flagged by CRAN: The salt parameter of crypto_scrypt() was
+  set to NULL in getcpupref(). This NULL value was used as src in a call to
+  memcpy()
 
 scrypt 0.1.3
 --------------------------------------------------------------------------------
